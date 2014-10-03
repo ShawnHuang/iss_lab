@@ -11,8 +11,7 @@
 Split2hsv::Split2hsv(std::string s){
   cv::Mat image_rgb;
   image_rgb = cv::imread(s, CV_LOAD_IMAGE_COLOR);
-  _image = image_rgb;
-  _image = this->hsv(_image);
+  _image = this->hsv(image_rgb);
   cv::split(_image, _imagehsv);
 }
 
@@ -21,7 +20,8 @@ Split2hsv::~Split2hsv(){
 }
 
 cv::Mat Split2hsv::hsv(cv::Mat image_src){
-  cv::Mat image_dst; 
+  cv::Mat image_dst;
+  //image_dst = image_src;
   cv::cvtColor(image_src, image_dst, CV_BGR2HSV);
   return image_dst;
 }
@@ -40,20 +40,26 @@ cv::Mat Split2hsv::getImageV(){
 
 cv::Mat Split2hsv::getLogTrans(cv::Mat image_src){
   cv::Mat temp = image_src.clone();
+  cv::Mat img2;
+  temp.convertTo(img2,CV_32FC1);
   for(int i=0;i<temp.rows;i++){
     for(int j=0;j<temp.cols;j++)  {
-      temp.at<uchar>(i, j) = 32*log10((float)temp.at<uchar>(i, j)+1);
+      img2.at<float>(i, j) = 32*log(img2.at<float>(i, j)+1)/log(2);
     }
   }
+  img2.convertTo(temp,CV_8UC1);
   return temp;
 }
 cv::Mat Split2hsv::getInvLogTrans(cv::Mat image_src){
   cv::Mat temp = image_src.clone();
+  cv::Mat img3;
+  temp.convertTo(img3,CV_32FC1);
   for(int i=0;i<temp.rows;i++){
     for(int j=0;j<temp.cols;j++)  {
-      float tempf = (float)temp.at<uchar>(i, j)/32;
-      temp.at<uchar>(i, j) = pow(2,tempf)-1;
+	  float tempf = img3.at<float>(i, j)/32;
+      img3.at<float>(i, j) = (float) pow(2,tempf)-1;
     }
   }
+  img3.convertTo(temp,CV_8UC1);
   return temp;
 }

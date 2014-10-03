@@ -24,5 +24,6 @@ public:
 
 private:
   cv::Mat _image;
-  std::vector<cv::Mat> _imagehsv;
+  //std::vector<cv::Mat> _imagehsv;
+  cv::Mat _imagehsv[3];
 };
