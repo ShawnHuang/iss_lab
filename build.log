@@ -1,0 +1,29 @@
+g++ -std=c++0x -c exercise_3.cpp -g -g -I/usr/local/include/opencv -I/usr/local/include  /usr/local/lib/libopencv_calib3d.so /usr/local/lib/libopencv_contrib.so /usr/local/lib/libopencv_core.so /usr/local/lib/libopencv_features2d.so /usr/local/lib/libopencv_flann.so /usr/local/lib/libopencv_gpu.so /usr/local/lib/libopencv_highgui.so /usr/local/lib/libopencv_imgproc.so /usr/local/lib/libopencv_legacy.so /usr/local/lib/libopencv_ml.so /usr/local/lib/libopencv_nonfree.so /usr/local/lib/libopencv_objdetect.so /usr/local/lib/libopencv_ocl.so /usr/local/lib/libopencv_photo.so /usr/local/lib/libopencv_stitching.so /usr/local/lib/libopencv_superres.so /usr/local/lib/libopencv_ts.a /usr/local/lib/libopencv_video.so /usr/local/lib/libopencv_videostab.so -lrt -lpthread -lm -ldl  
+exercise_3.cpp: In function ‘void videoDetect(std::string)’:
+exercise_3.cpp:92:21: error: conflicting declaration ‘cv::VideoWriter output’
+exercise_3.cpp:89:7: error: ‘output’ has a previous declaration as ‘cv::Mat output’
+exercise_3.cpp:122:13: error: no match for ‘operator<<’ in ‘output << frame’
+exercise_3.cpp:122:13: note: candidates are:
+/usr/local/include/opencv2/core/operations.hpp:1109:33: note: template<class _Tp, class _T2, int m, int n> cv::MatxCommaInitializer<_Tp, m, n> cv::operator<<(const cv::Matx<_Tp, n, nm>&, _T2)
+/usr/local/include/opencv2/core/operations.hpp:1477:30: note: template<class _Tp, class _T2, int cn> cv::VecCommaInitializer<_Tp, cn> cv::operator<<(const cv::Vec<_Tp, n>&, _T2)
+/usr/local/include/opencv2/core/operations.hpp:2905:51: note: template<class _Tp> cv::FileStorage& cv::operator<<(cv::FileStorage&, const _Tp&)
+/usr/local/include/opencv2/core/operations.hpp:2917:25: note: cv::FileStorage& cv::operator<<(cv::FileStorage&, const string&)
+/usr/local/include/opencv2/core/operations.hpp:2917:25: note:   no known conversion for argument 1 from ‘cv::Mat’ to ‘cv::FileStorage&’
+/usr/local/include/opencv2/core/operations.hpp:2919:28: note: cv::FileStorage& cv::operator<<(cv::FileStorage&, const char*)
+/usr/local/include/opencv2/core/operations.hpp:2919:28: note:   no known conversion for argument 1 from ‘cv::Mat’ to ‘cv::FileStorage&’
+/usr/local/include/opencv2/core/operations.hpp:2922:28: note: cv::FileStorage& cv::operator<<(cv::FileStorage&, char*)
+/usr/local/include/opencv2/core/operations.hpp:2922:28: note:   no known conversion for argument 1 from ‘cv::Mat’ to ‘cv::FileStorage&’
+/usr/local/include/opencv2/core/operations.hpp:3869:29: note: std::ostream& cv::operator<<(std::ostream&, const cv::Mat&)
+/usr/local/include/opencv2/core/operations.hpp:3869:29: note:   no known conversion for argument 1 from ‘cv::Mat’ to ‘std::ostream& {aka std::basic_ostream<char>&}’
+/usr/local/include/opencv2/core/operations.hpp:3882:29: note: std::ostream& cv::operator<<(std::ostream&, const cv::Formatted&)
+/usr/local/include/opencv2/core/operations.hpp:3882:29: note:   no known conversion for argument 1 from ‘cv::Mat’ to ‘std::ostream& {aka std::basic_ostream<char>&}’
+/usr/local/include/opencv2/core/operations.hpp:3889:52: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const std::vector<cv::Point_<_Tp> >&)
+/usr/local/include/opencv2/core/operations.hpp:3897:52: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const std::vector<cv::Point3_<_Tp> >&)
+/usr/local/include/opencv2/core/operations.hpp:3907:59: note: template<class _Tp, int m, int n> std::ostream& cv::operator<<(std::ostream&, const cv::Matx<_Tp, m, n>&)
+/usr/local/include/opencv2/core/operations.hpp:3915:45: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const cv::Point_<_Tp>&)
+/usr/local/include/opencv2/core/operations.hpp:3923:45: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const cv::Point3_<_Tp>&)
+/usr/local/include/opencv2/core/operations.hpp:3931:52: note: template<class _Tp, int n> std::ostream& cv::operator<<(std::ostream&, const cv::Vec<_Tp, cn>&)
+/usr/local/include/opencv2/core/operations.hpp:3955:45: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const cv::Size_<_Tp>&)
+/usr/local/include/opencv2/core/operations.hpp:3963:45: note: template<class _Tp> std::ostream& cv::operator<<(std::ostream&, const cv::Rect_<_Tp>&)
+/usr/local/include/opencv2/core/mat.hpp:2075:1: note: template<class _Tp, class T2> cv::MatCommaInitializer_<_Tp> cv::operator<<(const cv::Mat_<_Tp>&, T2)
+make: *** [exercise_3.o] Error 1

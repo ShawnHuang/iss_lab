@@ -2,6 +2,7 @@
 #include <opencv2/highgui/highgui.hpp> 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/background_segm.hpp>
+#include <iostream>
 using namespace cv;
 Mat video;
 Mat edges;
@@ -21,10 +22,11 @@ int main(int argc, char *argv[])
     VideoCapture cap("video.avi"); // open the default camera
     if(!cap.isOpened())  // check if we succeeded
         return -1;
-    namedWindow("GMM",1);
+    //namedWindow("GMM",1);
 
     pMOG = new BackgroundSubtractorMOG(10,5,0.5);
     pMOG2 = new BackgroundSubtractorMOG2(10,16,true);
+    int i =1;
     for(;;)
     {
         Mat output;
@@ -39,11 +41,27 @@ int main(int argc, char *argv[])
         dilate(fgMaskMOG2_e, fgMaskMOG2_d, kernel2);
         video.copyTo(output, fgMaskMOG_e);
         video.copyTo(output2, fgMaskMOG2_e);
-        imshow("GMM", video);
+        //imshow("GMM", video);
         //imshow("FG Mask MOG", output2);
-        imshow("FG Mask MOG", fgMaskMOG_t);
-        imshow("FG Mask with Morphology", fgMaskMOG_d);
-        imshow("FG Mask MOG output", output);
+        //imshow("FG Mask MOG", fgMaskMOG_t);
+        //imshow("FG Mask with Morphology", fgMaskMOG_d);
+        //imshow("FG Mask MOG output", output);
+        i++;
+        if (i==150)
+        {
+          vector<int> compression_params;
+          compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+          compression_params.push_back(9); 
+          imwrite("150th.png",output,compression_params);
+        }
+        if (i==200)
+        {
+          vector<int> compression_params;
+          compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+          compression_params.push_back(9); 
+          imwrite("200th.png",output,compression_params);
+        }
+        std::cout<<"frame"<<i<<std::endl;
         if(waitKey(30) >= 0) break;
     }
     // the camera will be deinitialized automatically in VideoCapture destructor
