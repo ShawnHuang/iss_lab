@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   {
     cap >> video;
     output << video;
-    //imshow("video", video);
+    imshow("video", video);
     if (cvWaitKey(20) == 27)
     {
       break;

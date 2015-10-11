@@ -1,0 +1,96 @@
+#include <opencv2/core/core.hpp> 
+#include <opencv2/highgui/highgui.hpp> 
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/video/background_segm.hpp>
+#include <iostream>
+using namespace cv;
+Mat video;
+Mat edges;
+Ptr<BackgroundSubtractor> pMOG2;
+Mat fgMaskMOG2;
+Mat fgMaskMOG2_d;
+Mat fgMaskMOG2_e;
+Mat fgMaskMOG2_t;
+Mat kernel(3,3,CV_8U,Scalar(1));
+Mat kernel2(5,5,CV_8U,Scalar(1));
+int main(int argc, char *argv[])
+{
+    VideoCapture cap("walk.avi"); // open the default camera
+    VideoWriter output("outputw.avi", CV_FOURCC('M', 'J', 'P', 'G'), 25, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH),cap.get(CV_CAP_PROP_FRAME_HEIGHT)));
+    if(!cap.isOpened())  // check if we succeeded
+        return -1;
+    //namedWindow("GMM",1);
+
+    pMOG2 = new BackgroundSubtractorMOG2(10,16,true);
+    int i =1;
+    for(;;)
+    {
+        Mat output2;
+        cap >> video; // get a new frame from camera
+        if (video.empty())
+        {
+          break;
+        }
+        pMOG2->operator()(video, fgMaskMOG2, 0.01);
+        threshold( fgMaskMOG2, fgMaskMOG2_t, 128, 255, 0);
+        dilate(fgMaskMOG2_t, fgMaskMOG2_d, kernel2);
+        erode(fgMaskMOG2_d, fgMaskMOG2_e, kernel2);
+
+        std::vector<std::vector<Point>> contours;
+        std::vector<Point> contour;
+        findContours(fgMaskMOG2_e, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+        //drawContours(video,contours,-1,Scalar(0,0,255),3);
+        double largest_size=0;
+        Rect rect;
+        for (i = 0; i < contours.size(); i++)
+        {
+            double size = contourArea(contours[i], false);
+            if(largest_size<size) {
+              largest_size = size;
+              rect = boundingRect(contours[i]);
+              contour = contours[i];
+            }
+        }
+        std::vector<Point> head;
+        int j;
+        for (j = 0; j < contour.size(); j++)
+        {
+           //if (contour[j].y<=rect.y)//&&
+           if(contour[j].y<=(rect.y+rect.height*0.14))
+           {
+              std::cout<<contour[j].y<<","<<(rect.y)<<","<<(rect.height)<<","<<rect.y<<std::endl;
+              head.push_back(contour[j]);
+           }  
+        }
+        std::cout<<"contour :"<<contour.size()<<std::endl;
+
+        std::cout<<"head :"<<head.size()<<std::endl;
+        if(head.size()>0) 
+        {
+          rect = boundingRect(head);
+          rectangle( video, rect, Scalar(255,0,0));
+        }
+        //Point2f center;
+        //float radius;
+        //RotatedRect ellipse;
+        //approxPolyDP(Mat(head),head,3,true);
+        //minEnclosingCircle((Mat)head,center,radius);
+        //ellipse = fitEllipse(head);
+
+        //std::cout<<rect.x<<","<<rect.y<<","<<rect.width<<","<<rect.height<<std::endl;
+        //circle(video,center,radius,Scalar(255,0,0));
+        //printf("%d\n", index);
+        //drawContours( video, contours, index, Scalar(0,0,255),3);
+        //video.copyTo(output2, fgMaskMOG2_e);
+        //imshow("GMM", video);
+        //imshow("FG Mask MOG", fgMaskMOG2_t);
+        //imshow("FG Mask with Morphology", fgMaskMOG2_d);
+        i++;
+        //std::cout<<"frame"<<i<<std::endl;
+        output<<video;
+        
+        if(waitKey(30) >= 0) break;
+    }
+  std::system("ffmpeg -y -i outputw.avi outputw.mp4 -v 0");
+  return 0;
+}
